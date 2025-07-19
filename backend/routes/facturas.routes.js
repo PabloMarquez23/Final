@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/facturas.controller');
+const facturasController = require('../controllers/facturas.controller');
 
-router.get('/', ctrl.obtenerFacturas);
-router.get('/:id', ctrl.obtenerFacturaPorId);
-router.post('/', ctrl.crearFactura);
+router.get('/', facturasController.obtenerFacturas);
 
 module.exports = router;

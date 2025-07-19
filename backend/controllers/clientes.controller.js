@@ -1,31 +1,47 @@
-const clientes = [];
+const db = require('../database');
 
-exports.obtenerClientes = (req, res) => {
-  res.json(clientes);
-};
-
-exports.crearCliente = (req, res) => {
-  const nuevo = { id: Date.now(), ...req.body };
-  clientes.push(nuevo);
-  res.status(201).json(nuevo);
-};
-
-exports.actualizarCliente = (req, res) => {
-  const index = clientes.findIndex(c => c.id === parseInt(req.params.id));
-  if (index !== -1) {
-    clientes[index] = { ...clientes[index], ...req.body };
-    res.json(clientes[index]);
-  } else {
-    res.status(404).json({ mensaje: 'Cliente no encontrado' });
+exports.obtenerClientes = async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM clientes');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener clientes', error });
   }
 };
 
-exports.eliminarCliente = (req, res) => {
-  const index = clientes.findIndex(c => c.id === parseInt(req.params.id));
-  if (index !== -1) {
-    const eliminado = clientes.splice(index, 1);
-    res.json(eliminado);
-  } else {
-    res.status(404).json({ mensaje: 'Cliente no encontrado' });
+exports.crearCliente = async (req, res) => {
+  const { nombre, correo, telefono, direccion } = req.body;
+  try {
+    const result = await db.query(
+      'INSERT INTO clientes (nombre, correo, telefono, direccion) VALUES ($1, $2, $3, $4) RETURNING *',
+      [nombre, correo, telefono, direccion]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al crear cliente', error });
+  }
+};
+
+exports.actualizarCliente = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, correo, telefono, direccion } = req.body;
+  try {
+    const result = await db.query(
+      'UPDATE clientes SET nombre = $1, correo = $2, telefono = $3, direccion = $4 WHERE id = $5 RETURNING *',
+      [nombre, correo, telefono, direccion, id]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al actualizar cliente', error });
+  }
+};
+
+exports.eliminarCliente = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM clientes WHERE id = $1', [id]);
+    res.json({ mensaje: 'Cliente eliminado' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al eliminar cliente', error });
   }
 };

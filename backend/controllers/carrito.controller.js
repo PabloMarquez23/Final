@@ -1,21 +1,37 @@
-let carrito = [
-  { id: 1, nombre: 'Martillo', precio: 8.5, cantidad: 2 },
-  { id: 2, nombre: 'Taladro', precio: 45.0, cantidad: 1 }
-];
+const db = require('../database');
 
-exports.obtenerCarrito = (req, res) => {
-  res.json(carrito);
+exports.obtenerCarritoPorCliente = async (req, res) => {
+  const { cliente_id } = req.params;
+  try {
+    const result = await db.query(
+      'SELECT * FROM carrito WHERE cliente_id = $1',
+      [cliente_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener carrito', error });
+  }
 };
 
-exports.agregarAlCarrito = (req, res) => {
-  const producto = req.body;
-  producto.id = carrito.length ? carrito[carrito.length - 1].id + 1 : 1;
-  carrito.push(producto);
-  res.status(201).json(producto);
+exports.agregarAlCarrito = async (req, res) => {
+  const { cliente_id, producto_id, cantidad } = req.body;
+  try {
+    const result = await db.query(
+      'INSERT INTO carrito (cliente_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *',
+      [cliente_id, producto_id, cantidad]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al agregar al carrito', error });
+  }
 };
 
-exports.eliminarDelCarrito = (req, res) => {
+exports.eliminarDelCarrito = async (req, res) => {
   const { id } = req.params;
-  carrito = carrito.filter(item => item.id !== parseInt(id));
-  res.json({ mensaje: 'Producto eliminado del carrito' });
+  try {
+    await db.query('DELETE FROM carrito WHERE id = $1', [id]);
+    res.json({ mensaje: 'Producto eliminado del carrito' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al eliminar del carrito', error });
+  }
 };

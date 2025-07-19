@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/reportes.controller');
+const reportesController = require('../controllers/reportes.controller');
 
-router.get('/ventas', ctrl.reporteVentas);
-router.get('/inventario', ctrl.reporteInventario);
+router.get('/ventas-dia', reportesController.reporteVentasPorDia);
 
 module.exports = router;

@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/carrito.controller');
+const carritoController = require('../controllers/carrito.controller');
 
-router.get('/', ctrl.obtenerCarrito);
-router.post('/', ctrl.agregarAlCarrito);
-router.delete('/:id', ctrl.eliminarDelCarrito);
+router.get('/:cliente_id', carritoController.obtenerCarritoPorCliente);
+router.post('/', carritoController.agregarAlCarrito);
+router.delete('/:id', carritoController.eliminarDelCarrito);
 
 module.exports = router;
