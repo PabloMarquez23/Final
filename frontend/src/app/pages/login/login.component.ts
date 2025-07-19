@@ -26,19 +26,20 @@ export class LoginComponent {
     });
   }
 
- onSubmit() {
-  if (this.loginForm.valid) {
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (res: any) => {
-        this.authService.guardarSesion(res.token, res.rol); // <-- Guardar también el rol
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.error = 'Correo o contraseña incorrectos';
-        console.error('Login fallido:', err);
-      }
-    });
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (res: any) => {
+          console.log('Login response:', res);
+          const rol = res?.usuario?.rol || 'cliente'; // fallback si por alguna razón no viene el rol
+          this.authService.guardarSesion('token-falso', rol); // puedes generar un token real luego si deseas
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          this.error = 'Correo o contraseña incorrectos';
+          console.error('Login fallido:', err);
+        }
+      });
+    }
   }
-}
-
 }

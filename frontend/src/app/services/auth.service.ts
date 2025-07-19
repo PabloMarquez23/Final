@@ -11,7 +11,11 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(datos: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, datos);
+    return this.http.post(`${this.apiUrl}/auth`, datos);
+  }
+
+  registrar(datos: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/register`, datos);
   }
 
   guardarSesion(token: string, rol: string): void {
@@ -31,9 +35,4 @@ export class AuthService {
   obtenerRol(): string | null {
     return localStorage.getItem('rol');
   }
-
-  registrar(datos: any): Observable<any> {
-  return this.http.post(`${this.apiUrl}/registro`, datos);
-}
-
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ProductosService } from '../../services/productos.service';
 import { AuthService } from '../../services/auth.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-productos',
@@ -17,9 +17,11 @@ export class ProductosComponent implements OnInit {
   productos: any[] = [];
 
   constructor(
-    private productosService: ProductosService,
-    private authService: AuthService
+  private productosService: ProductosService,
+  private authService: AuthService,
+  private router: Router
   ) {}
+
 
   get esAdmin(): boolean {
     return this.authService.obtenerRol() === 'admin';
@@ -41,9 +43,9 @@ export class ProductosComponent implements OnInit {
   }
 
   agregarProducto(): void {
-    // Aquí podrías redirigir a un formulario o abrir modal
-    alert('Función para agregar producto no implementada todavía');
-  }
+  this.router.navigate(['/productos/agregar']);
+}
+
 
   editarProducto(producto: any): void {
     alert(`Editar producto: ${producto.nombre}`);

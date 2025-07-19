@@ -10,7 +10,8 @@ export class ReportesService {
 
   constructor(private http: HttpClient) {}
 
+  // Cambiado para apuntar a /ventas-dia
   obtenerReportes(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    return this.http.get<any>(`${this.apiUrl}/ventas-dia`);
   }
 }

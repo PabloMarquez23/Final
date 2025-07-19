@@ -8,12 +8,12 @@ import { ReportesService } from '../../../services/reportes.service';
   imports: [CommonModule],
   templateUrl: './reportes.component.html',
   styleUrls: ['./reportes.component.scss'],
-  providers: [ReportesService] // <-- Puedes añadir esto si no usas `providedIn: 'root'` en el servicio
+  providers: [ReportesService] 
 })
 export class ReportesComponent implements OnInit {
   reportes: any = {};
 
-  constructor(private reportesService: ReportesService) {} // <-- Asegúrate que el nombre esté correcto
+  constructor(private reportesService: ReportesService) {} 
 
   ngOnInit(): void {
     this.reportesService.obtenerReportes().subscribe({
