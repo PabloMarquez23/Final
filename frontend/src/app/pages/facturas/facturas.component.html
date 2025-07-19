@@ -1,0 +1,39 @@
+<h2>Gestión de Facturas</h2>
+
+<form (ngSubmit)="guardarFactura()" #facturaForm="ngForm">
+  <label>Cliente ID:</label>
+  <input type="number" name="clienteId" [(ngModel)]="factura.cliente_id" required />
+
+  <label>Fecha:</label>
+  <input type="date" name="fecha" [(ngModel)]="factura.fecha" required />
+
+  <label>Total:</label>
+  <input type="number" name="total" [(ngModel)]="factura.total" required />
+
+  <button type="submit">{{ editando ? 'Actualizar' : 'Agregar' }}</button>
+  <button type="button" (click)="cancelarEdicion()" *ngIf="editando">Cancelar</button>
+</form>
+
+<table *ngIf="facturas.length > 0" border="1" style="margin-top: 20px;">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Cliente ID</th>
+      <th>Fecha</th>
+      <th>Total</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let f of facturas">
+      <td>{{ f.id }}</td>
+      <td>{{ f.cliente_id }}</td>
+      <td>{{ f.fecha }}</td>
+      <td>${{ f.total }}</td>
+      <td>
+        <button (click)="editarFactura(f)">Editar</button>
+        <button (click)="eliminarFactura(f.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

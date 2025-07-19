@@ -1,0 +1,21 @@
+<h2>Iniciar Sesión</h2>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <label for="correo">Correo:</label>
+  <input id="correo" formControlName="correo" type="email" required />
+  <div *ngIf="loginForm.get('correo')?.invalid && loginForm.get('correo')?.touched">
+    <small>Correo inválido</small>
+  </div>
+
+  <label for="contrasena">Contraseña:</label>
+  <input id="contrasena" formControlName="contrasena" type="password" required />
+  <div *ngIf="loginForm.get('contrasena')?.invalid && loginForm.get('contrasena')?.touched">
+    <small>Contraseña requerida</small>
+  </div>
+
+  <button type="submit" [disabled]="loginForm.invalid">Ingresar</button>
+</form>
+
+<div *ngIf="error" style="color:red; margin-top:10px;">
+  {{ error }}
+</div>

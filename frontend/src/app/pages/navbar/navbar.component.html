@@ -1,0 +1,19 @@
+<nav>
+  <a routerLink="/home">Inicio</a>
+
+  <ng-container *ngIf="estaLogueado">
+    <a *ngIf="esAdmin" routerLink="/productos">Gestionar Productos</a>
+    <a *ngIf="esAdmin" routerLink="/clientes">Clientes</a>
+    <a *ngIf="esAdmin" routerLink="/reportes">Reportes</a>
+
+    <a *ngIf="esCliente" routerLink="/carrito">Carrito</a>
+    <a *ngIf="esCliente" routerLink="/facturas">Mis Compras</a>
+
+    <button (click)="cerrarSesion()">Cerrar sesión</button>
+  </ng-container>
+
+  <ng-container *ngIf="!estaLogueado">
+    <a routerLink="/login">Iniciar Sesión</a>
+    <a routerLink="/registro">Registrarse</a>
+  </ng-container>
+</nav>

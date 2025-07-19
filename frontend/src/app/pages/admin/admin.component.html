@@ -1,0 +1,8 @@
+<h2 *ngIf="isAdmin">Panel de Administración</h2>
+
+<nav *ngIf="isAdmin">
+  <button routerLink="/admin/reportes">📊 Ver Reportes</button>
+  <button routerLink="/productos">🛠️ Administrar Productos</button>
+  <button routerLink="/clientes">👥 Administrar Clientes</button>
+  <button routerLink="/facturas">🧾 Ver Facturas</button>
+</nav>

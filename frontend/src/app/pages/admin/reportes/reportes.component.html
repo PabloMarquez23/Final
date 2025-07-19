@@ -1,0 +1,26 @@
+<h2>Reportes Administrativos</h2>
+
+<section>
+  <h3>Ventas Totales</h3>
+  <p *ngIf="!reportes?.ventas">Cargando ventas...</p>
+  <p *ngIf="reportes?.ventas">Total: ${{ reportes.ventas }}</p>
+</section>
+
+<section>
+  <h3>Productos más vendidos</h3>
+  <ul *ngIf="reportes?.populares?.length">
+    <li *ngFor="let prod of reportes.populares">
+      {{ prod.nombre }} - Vendidos: {{ prod.cantidad }}
+    </li>
+  </ul>
+  <p *ngIf="!reportes?.populares?.length">No hay datos disponibles.</p>
+</section>
+
+<section>
+  <h3>Clientes Frecuentes</h3>
+  <ul *ngIf="reportes?.clientes?.length">
+    <li *ngFor="let cli of reportes.clientes">
+      {{ cli.nombre }} - Compras: {{ cli.compras }}
+    </li>
+  </ul>
+</section>

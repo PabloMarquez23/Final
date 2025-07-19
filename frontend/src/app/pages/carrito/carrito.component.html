@@ -1,0 +1,18 @@
+<h2>Mi Carrito</h2>
+
+<div *ngIf="carrito.length === 0">
+  <p>Tu carrito está vacío.</p>
+</div>
+
+<div *ngFor="let item of carrito" class="item-carrito">
+  <h3>{{ item.producto.nombre }}</h3>
+  <p>Precio unitario: ${{ item.producto.precio }}</p>
+  <p>Cantidad: {{ item.cantidad }}</p>
+  <p>Total: ${{ item.producto.precio * item.cantidad }}</p>
+  <button (click)="eliminarDelCarrito(item.producto.id)">Eliminar</button>
+</div>
+
+<div *ngIf="carrito.length > 0">
+  <h3>Total: ${{ obtenerTotal() }}</h3>
+  <button (click)="confirmarCompra()">Confirmar compra</button>
+</div>
