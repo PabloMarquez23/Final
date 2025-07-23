@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     telefono VARCHAR(20),
     direccion TEXT
 );
+ALTER TABLE clientes ADD COLUMN contrasena VARCHAR(255);
 
 -- Tabla de proveedores (entidades que surten productos)
 CREATE TABLE IF NOT EXISTS proveedores (
@@ -39,10 +40,11 @@ CREATE TABLE IF NOT EXISTS productos (
 CREATE TABLE IF NOT EXISTS ventas (
     id SERIAL PRIMARY KEY,
     cliente_id INTEGER REFERENCES clientes(id),
-    usuario_id INTEGER REFERENCES usuarios(id),
+    usuario_id INTEGER REFERENCES usuarios(id) DEFAULT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total NUMERIC(10,2) NOT NULL
 );
+
 
 -- Detalle de ventas (productos vendidos en cada venta)
 CREATE TABLE IF NOT EXISTS detalle_ventas (
@@ -61,3 +63,11 @@ CREATE TABLE IF NOT EXISTS facturas (
     metodo_pago VARCHAR(50),
     total NUMERIC(10,2)
 );
+
+----------------
+-- Insertar usuarios iniciales: 1 admin y 2 empleados
+INSERT INTO usuarios (nombre, correo, contrasena, rol) VALUES
+  ('Administrador Principal', 'admin@ferreteria.com', 'admin123', 'admin'),
+  ('Empleado Juan', 'juan@ferreteria.com', 'juan123', 'empleado'),
+  ('Empleado Maria', 'maria@ferreteria.com', 'maria123', 'empleado')
+ON CONFLICT (correo) DO NOTHING;

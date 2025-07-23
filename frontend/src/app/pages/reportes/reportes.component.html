@@ -1,0 +1,20 @@
+<h2>Reporte de Ventas por Día</h2>
+
+<table *ngIf="reportes.length > 0; else sinDatos" border="1" cellpadding="10">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Total Vendido</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fila of reportes">
+      <td>{{ fila.dia }}</td>
+      <td>${{ fila.total_dia }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #sinDatos>
+  <p>No hay datos disponibles para mostrar.</p>
+</ng-template>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ReporteVentasDia } from '../models/reporte.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,7 @@ export class ReportesService {
 
   constructor(private http: HttpClient) {}
 
-  // Cambiado para apuntar a /ventas-dia
-  obtenerReportes(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/ventas-dia`);
+  obtenerReportes(): Observable<ReporteVentasDia[]> {
+    return this.http.get<ReporteVentasDia[]>(`${this.apiUrl}/ventas-dia`);
   }
 }

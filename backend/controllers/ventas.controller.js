@@ -1,58 +1,90 @@
 const db = require('../database');
 
+// Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM ventas');
+    const result = await db.query('SELECT * FROM ventas ORDER BY fecha DESC');
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener ventas', error });
   }
 };
 
+// Crear una nueva venta
 exports.crearVenta = async (req, res) => {
-  const { cliente_id, usuario_id, productos } = req.body;
   try {
-    await db.query('BEGIN');
+    const { cliente_id, productos } = req.body;
 
-    const ventaRes = await db.query(
-      'INSERT INTO ventas (cliente_id, usuario_id, total) VALUES ($1, $2, 0) RETURNING *',
-      [cliente_id, usuario_id]
-    );
-    const venta = ventaRes.rows[0];
+    if (!cliente_id || !Array.isArray(productos) || productos.length === 0) {
+      return res.status(400).json({ error: 'Faltan datos de la venta' });
+    }
+
+    // Verifica que todos los productos existan y calcula el total
     let total = 0;
-
     for (const item of productos) {
-      const productoRes = await db.query(
-        'SELECT precio FROM productos WHERE id = $1',
-        [item.producto_id]
-      );
-      const precio_unitario = productoRes.rows[0].precio;
-      const subtotal = precio_unitario * item.cantidad;
-      total += subtotal;
+      const prodRes = await db.query('SELECT precio FROM productos WHERE id = $1', [item.producto_id]);
+      if (prodRes.rows.length === 0) {
+        return res.status(404).json({ error: `Producto con ID ${item.producto_id} no encontrado` });
+      }
+      total += prodRes.rows[0].precio * item.cantidad;
+    }
 
+    // Inserta la venta
+    const ventaRes = await db.query(
+      'INSERT INTO ventas (cliente_id, fecha, total) VALUES ($1, NOW(), $2) RETURNING id',
+      [cliente_id, total]
+    );
+    const ventaId = ventaRes.rows[0].id;
+
+    // Inserta los detalles de venta
+    for (const item of productos) {
+      const precio = (await db.query('SELECT precio FROM productos WHERE id = $1', [item.producto_id])).rows[0].precio;
       await db.query(
         'INSERT INTO detalle_ventas (venta_id, producto_id, cantidad, precio_unitario) VALUES ($1, $2, $3, $4)',
-        [venta.id, item.producto_id, item.cantidad, precio_unitario]
-      );
-
-      await db.query(
-        'UPDATE productos SET stock = stock - $1 WHERE id = $2',
-        [item.cantidad, item.producto_id]
+        [ventaId, item.producto_id, item.cantidad, precio]
       );
     }
 
-    await db.query('UPDATE ventas SET total = $1 WHERE id = $2', [total, venta.id]);
-
-    await db.query('INSERT INTO facturas (venta_id, metodo_pago, total) VALUES ($1, $2, $3)', [
-      venta.id,
-      'Efectivo',
-      total
-    ]);
-
-    await db.query('COMMIT');
-    res.status(201).json({ mensaje: 'Venta registrada correctamente', id_venta: venta.id });
+    res.status(201).json({ mensaje: 'Venta registrada correctamente', ventaId });
   } catch (error) {
-    await db.query('ROLLBACK');
-    res.status(500).json({ mensaje: 'Error al registrar venta', error });
+    console.error('Error al registrar venta:', error);
+    res.status(500).json({ error: 'Error al registrar venta' });
+  }
+};
+
+// Obtener todas las compras de un cliente
+exports.obtenerComprasPorCliente = async (req, res) => {
+  const clienteId = req.params.clienteId;
+
+  try {
+    const ventasRes = await db.query(
+      'SELECT * FROM ventas WHERE cliente_id = $1 ORDER BY fecha DESC',
+      [clienteId]
+    );
+
+    const compras = [];
+
+    for (const venta of ventasRes.rows) {
+      const detallesRes = await db.query(
+        `SELECT p.nombre, dv.cantidad, dv.precio_unitario, 
+                dv.cantidad * dv.precio_unitario AS subtotal
+         FROM detalle_ventas dv
+         JOIN productos p ON dv.producto_id = p.id
+         WHERE dv.venta_id = $1`,
+        [venta.id]
+      );
+
+      compras.push({
+        id: venta.id,
+        fecha: venta.fecha,
+        total: venta.total,
+        detalles: detallesRes.rows
+      });
+    }
+
+    res.json(compras);
+  } catch (error) {
+    console.error('Error al obtener compras del cliente:', error);
+    res.status(500).json({ mensaje: 'Error al obtener compras del cliente', error });
   }
 };

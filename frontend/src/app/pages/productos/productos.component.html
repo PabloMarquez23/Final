@@ -8,13 +8,22 @@
   <p>No hay productos disponibles.</p>
 </div>
 
-<div *ngFor="let prod of productos" class="product-card">
-  <h3>{{ prod.nombre }}</h3>
-  <p>{{ prod.descripcion }}</p>
-  <p><strong>Precio:</strong> ${{ prod.precio }}</p>
-  <p><strong>Stock:</strong> {{ prod.stock }}</p>
+<div *ngFor="let producto of productos" class="product-card">
+  <h3>{{ producto.nombre }}</h3>
+  <p>{{ producto.descripcion }}</p>
+  <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+  <p><strong>Stock:</strong> {{ producto.stock }}</p>
+
+  <!-- Cliente -->
+  <div *ngIf="!esAdmin">
+    <label>Cantidad:</label>
+    <input type="number" [(ngModel)]="producto.cantidad" min="1" />
+    <button (click)="agregarAlCarrito(producto)">Agregar al carrito</button>
+  </div>
+
+  <!-- Admin -->
   <div *ngIf="esAdmin">
-    <button (click)="editarProducto(prod)">Editar</button>
-    <button (click)="eliminarProducto(prod.id)">Eliminar</button>
+    <button (click)="editarProducto(producto)">Editar</button>
+    <button (click)="eliminarProducto(producto.id)">Eliminar</button>
   </div>
 </div>

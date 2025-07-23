@@ -45,3 +45,35 @@ exports.eliminarCliente = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al eliminar cliente', error });
   }
 };
+exports.loginCliente = async (req, res) => {
+  const { correo, contrasena } = req.body;
+
+  try {
+    const result = await db.query('SELECT * FROM clientes WHERE correo = $1', [correo]);
+    const cliente = result.rows[0];
+
+    if (!cliente) {
+      return res.status(401).json({ mensaje: 'Correo no registrado' });
+    }
+
+    // Por simplicidad, comparamos contraseñas directamente.
+    // Para producción, usa bcrypt.
+    if (cliente.contrasena !== contrasena) {
+      return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
+    }
+
+    // Simula un token, puedes generar uno real con JWT si deseas
+    const token = 'token-falso';
+
+    res.status(200).json({
+      token,
+      id: cliente.id,
+      nombre: cliente.nombre,
+      correo: cliente.correo,
+      rol: 'cliente'
+    });
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ mensaje: 'Error al iniciar sesión', error });
+  }
+};

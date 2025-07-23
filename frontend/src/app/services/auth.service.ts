@@ -18,14 +18,16 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/auth/register`, datos);
   }
 
-  guardarSesion(token: string, rol: string): void {
+  guardarSesion(token: string, rol: string, usuario: any): void {
     localStorage.setItem('token', token);
     localStorage.setItem('rol', rol);
+    localStorage.setItem('usuario', JSON.stringify(usuario)); // <--- necesario
   }
 
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('rol');
+    localStorage.removeItem('usuario');
   }
 
   estaAutenticado(): boolean {

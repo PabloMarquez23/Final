@@ -1,0 +1,28 @@
+<h2>Mis Compras</h2>
+
+<div *ngIf="compras.length === 0">No hay compras registradas.</div>
+
+<div *ngFor="let compra of compras" class="compra-card">
+  <h3>Compra #{{ compra.id }}</h3>
+  <p><strong>Fecha:</strong> {{ formatearFecha(compra.fecha) }}</p>
+  <p><strong>Total:</strong> ${{ compra.total }}</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detalle of compra.detalles">
+        <td>{{ detalle.nombre }}</td>
+        <td>{{ detalle.cantidad }}</td>
+        <td>${{ detalle.precio_unitario }}</td>
+        <td>${{ detalle.subtotal }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

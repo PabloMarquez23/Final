@@ -17,11 +17,12 @@ export class RegistroComponent {
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registroForm = this.fb.group({
-      nombre: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      contrasena: ['', Validators.required],
-      rol: ['cliente', Validators.required]
-    });
+  nombre: ['', Validators.required],
+  correo: ['', [Validators.required, Validators.email]],
+  contrasena: ['', Validators.required],
+  rol: ['cliente']  // Valor fijo
+});
+
   }
 
   onSubmit() {

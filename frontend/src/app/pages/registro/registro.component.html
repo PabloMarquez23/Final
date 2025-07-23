@@ -10,11 +10,8 @@
   <label for="contrasena">Contraseña:</label>
   <input type="password" id="contrasena" formControlName="contrasena" required>
 
-  <label for="rol">Rol:</label>
-  <select id="rol" formControlName="rol">
-    <option value="empleado">Empleado</option>
-    <option value="admin">Administrador</option>
-  </select>
+  <!-- Campo oculto para que el rol siempre sea 'cliente' -->
+  <input type="hidden" formControlName="rol" value="cliente">
 
   <button type="submit" [disabled]="registroForm.invalid">Registrarse</button>
 </form>

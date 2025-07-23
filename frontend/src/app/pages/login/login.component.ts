@@ -31,8 +31,16 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (res: any) => {
           console.log('Login response:', res);
-          const rol = res?.usuario?.rol || 'cliente'; // fallback si por alguna razón no viene el rol
-          this.authService.guardarSesion('token-falso', rol); // puedes generar un token real luego si deseas
+
+          const token = res.token || 'token-falso';
+          const usuario = {
+            id: res.id,
+            nombre: res.nombre,
+            correo: res.correo,
+            rol: res.rol || 'cliente'
+          };
+
+          this.authService.guardarSesion(token, usuario.rol, usuario);
           this.router.navigate(['/']);
         },
         error: (err) => {

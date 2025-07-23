@@ -18,6 +18,9 @@ export class NavbarComponent {
     return this.authService.estaAutenticado();
   }
 
+   estaAutenticado(): boolean {
+    return this.authService.estaAutenticado();
+  }
   get esAdmin(): boolean {
     return this.authService.obtenerRol() === 'admin';
   }
@@ -29,5 +32,10 @@ export class NavbarComponent {
   cerrarSesion(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  logout(): void {
+    this.authService.logout();
+    location.reload(); // o router.navigate(['/home']);
   }
 }
